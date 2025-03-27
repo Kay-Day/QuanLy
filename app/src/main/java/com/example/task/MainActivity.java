@@ -3,13 +3,14 @@ package com.example.task;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.widget.Button;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.task.adapter.TaskAdapter;
 import com.example.task.db.DatabaseHelper;
 import com.example.task.model.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +19,7 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnTas
     private TaskAdapter taskAdapter;
     private List<Task> taskList;
     private DatabaseHelper db;
+    private BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,12 +36,7 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnTas
         }
 
         taskRecyclerView = findViewById(R.id.taskRecyclerView);
-        Button addTaskButton = findViewById(R.id.addTaskButton);
-        Button notificationsButton = findViewById(R.id.notificationsButton);
-        Button documentsButton = findViewById(R.id.documentsButton);
-        Button reportButton = findViewById(R.id.reportButton);
-        Button logoutButton = findViewById(R.id.logoutButton);
-
+        bottomNavigationView = findViewById(R.id.bottomNavigation);
         db = new DatabaseHelper(this);
         taskList = new ArrayList<>();
         taskAdapter = new TaskAdapter(taskList, this);
@@ -48,39 +45,41 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnTas
 
         loadTasks();
 
-        addTaskButton.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, AddEditTaskActivity.class);
-            startActivityForResult(intent, 1);
+        // Xử lý sự kiện TabBar
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+            if (itemId == R.id.nav_tasks) {
+                // Đã ở màn hình Tasks, không cần làm gì
+                return true;
+            } else if (itemId == R.id.nav_add_task) {
+                Intent intent = new Intent(MainActivity.this, AddEditTaskActivity.class);
+                startActivityForResult(intent, 1);
+                return true;
+            } else if (itemId == R.id.nav_notifications) {
+                Intent intent = new Intent(MainActivity.this, NotificationsActivity.class);
+                startActivity(intent);
+                return true;
+            } else if (itemId == R.id.nav_documents) {
+                Intent intent = new Intent(MainActivity.this, DocumentsActivity.class);
+                startActivity(intent);
+                return true;
+            } else if (itemId == R.id.nav_profile) {
+                // Xử lý Logout
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean("isLoggedIn", false);
+                editor.remove("username");
+                editor.apply();
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+                return true;
+            }
+            return false;
         });
 
-        notificationsButton.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, NotificationsActivity.class);
-            startActivity(intent);
-        });
-
-        documentsButton.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, DocumentsActivity.class);
-            startActivity(intent);
-        });
-
-        reportButton.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, ReportActivity.class);
-            startActivity(intent);
-        });
-
-        logoutButton.setOnClickListener(v -> {
-            // Xóa trạng thái đăng nhập
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean("isLoggedIn", false);
-            editor.remove("username");
-            editor.apply();
-
-            // Chuyển về màn hình LoginActivity
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            finish();
-        });
+        // Đặt tab mặc định là Tasks
+        bottomNavigationView.setSelectedItemId(R.id.nav_tasks);
     }
 
     private void loadTasks() {

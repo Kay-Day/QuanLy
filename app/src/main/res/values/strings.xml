@@ -1,3 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Task</string>
+    <string name="app_name">Quản Lý Công Việc</string>
+    <string name="tasks">Công Việc</string>
+    <string name="add_task">Thêm Công Việc</string>
+    <string name="notifications">Thông Báo</string>
+    <string name="documents">Tài Liệu</string>
+    <string name="logout">Đăng Xuất</string>
+    <string name="title">Tiêu Đề</string>
+    <string name="description">Mô Tả</string>
+    <string name="assigned_to">Giao Cho</string>
+    <string name="status">Trạng Thái (Chờ/Xử Lý/Hoàn Thành)</string>
+    <string name="deadline">Hạn Chót (ví dụ: 2025-03-30)</string>
+    <string name="priority">Ưu Tiên (Thấp/Trung Bình/Cao)</string>
+    <string name="save">Lưu</string>
+    <string name="login">Đăng Nhập</string>
+    <string name="register">Đăng Ký</string>
+    <string name="username">Tên Người Dùng</string>
+    <string name="password">Mật Khẩu</string>
+    <string name="add_document">Thêm Tài Liệu</string>
+    <string name="report">Báo Cáo Dự Án</string>
+    <string name="pending_tasks">Công Việc Chờ: %1$d</string>
+    <string name="in_progress_tasks">Công Việc Đang Xử Lý: %1$d</string>
+    <string name="completed_tasks">Công Việc Hoàn Thành: %1$d</string>
 </resources>
